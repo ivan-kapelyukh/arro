@@ -1,4 +1,4 @@
-# ARRO
+# ARRO :robot:
 
 ## A Rusty Robotic Opponent
 
