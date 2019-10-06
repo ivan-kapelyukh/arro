@@ -2,19 +2,23 @@ use std::fmt;
 
 fn main() {
   let board = Board {
-    width: 10,
-    height: 12,
+    cells: [[0, 1, 2], [3, 4, 5], [6, 7, 8]],
   };
   println!("{}", board);
 }
 
 struct Board {
-  width: u32,
-  height: u32,
+  cells: [[u32; 3]; 3],
 }
 
 impl fmt::Display for Board {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    write!(f, "{} by {}", self.width, self.height)
+    for (i, row) in self.cells.iter().enumerate() {
+      for (j, cell) in row.iter().enumerate() {
+        write!(f, "{}", cell)?;
+      }
+      writeln!(f)?;
+    }
+    Ok(())
   }
 }
