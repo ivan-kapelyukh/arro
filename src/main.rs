@@ -12,8 +12,20 @@ fn main() {
     stdin().read_line(&mut size).expect("Error reading input");
     let size: usize = size.trim().parse().expect("Please enter a number");
 
-    let board = Board::empty(size);
+    let mut board = Board::empty(size);
     println!("{}", board);
+
+    let mut player_move = String::new();
+    println!("Your move!");
+    stdin()
+        .read_line(&mut player_move)
+        .expect("Error reading input");
+
+    // TODO: a couple of error checks.
+    let mut split = player_move.split_whitespace();
+    let from = split.next().unwrap();
+    let to = split.next().unwrap();
+    println!("Moving from {} to {}", from, to);
 }
 
 struct Board {
