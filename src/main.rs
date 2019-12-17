@@ -1,9 +1,18 @@
 use std::fmt::Display;
 use std::fmt::Formatter;
 use std::fmt::Result;
+use std::io::stdin;
 
 fn main() {
-    let board = Board::empty(3);
+    // Clear terminal.
+    print!("{}[2J", 27 as char);
+    println!("Hello there! What size should the game board be?");
+
+    let mut size = String::new();
+    stdin().read_line(&mut size).expect("Error reading input");
+    let size: usize = size.trim().parse().expect("Please enter a number");
+
+    let board = Board::empty(size);
     println!("{}", board);
 }
 
@@ -16,6 +25,10 @@ impl Board {
         Board {
             cells: vec![vec![Piece::default(); n]; n],
         }
+    }
+
+    fn set(&mut self, row: usize, col: usize, new_piece: Piece) {
+        self.cells[row][col] = new_piece;
     }
 }
 
