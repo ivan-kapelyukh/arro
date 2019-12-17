@@ -3,18 +3,20 @@ use std::fmt::Formatter;
 use std::fmt::Result;
 
 fn main() {
-    let board = Board {
-        cells: [
-            [Piece::Cross, Piece::Empty, Piece::Nought],
-            [Piece::Cross, Piece::Empty, Piece::Nought],
-            [Piece::Cross, Piece::Empty, Piece::Nought],
-        ],
-    };
+    let board = Board::empty(3);
     println!("{}", board);
 }
 
 struct Board {
-    cells: [[Piece; 3]; 3],
+    cells: Vec<Vec<Piece>>,
+}
+
+impl Board {
+    fn empty(n: usize) -> Self {
+        Board {
+            cells: vec![vec![Piece::default(); n]; n],
+        }
+    }
 }
 
 #[derive(Copy, Clone)]
@@ -24,10 +26,16 @@ enum Piece {
     Cross,
 }
 
+impl Default for Piece {
+    fn default() -> Self {
+        Piece::Empty
+    }
+}
+
 impl Display for Piece {
     fn fmt(&self, f: &mut Formatter) -> Result {
         let character = match self {
-            Piece::Empty => ' ',
+            Piece::Empty => '·',
             Piece::Nought => 'O',
             Piece::Cross => 'X',
         };
