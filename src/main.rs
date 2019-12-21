@@ -1,6 +1,6 @@
+use std::fmt;
 use std::fmt::Display;
 use std::fmt::Formatter;
-use std::fmt::Result;
 use std::io::stdin;
 
 fn main() {
@@ -21,11 +21,19 @@ fn main() {
         .read_line(&mut player_move)
         .expect("Error reading input");
 
-    // TODO: a couple of error checks.
-    let mut split = player_move.split_whitespace();
-    let from = split.next().unwrap();
-    let to = split.next().unwrap();
-    println!("Moving from {} to {}", from, to);
+    let parsed_index = board.square_to_index(&player_move);
+    let index: usize;
+    match parsed_index {
+        Some(i) => {
+            index = i;
+            println!("Index: {}", index);
+        }
+        None => println!(
+            "Square should be in the form: a1, up to {}{}",
+            (b'a' + (board.width() - 1) as u8) as char,
+            board.height()
+        ),
+    }
 }
 
 struct Board {
@@ -41,6 +49,26 @@ impl Board {
 
     fn set(&mut self, row: usize, col: usize, new_piece: Piece) {
         self.cells[row][col] = new_piece;
+    }
+
+    fn height(&self) -> usize {
+        self.cells.len()
+    }
+
+    fn width(&self) -> usize {
+        self.cells[0].len()
+    }
+
+    fn square_to_index(&self, square: &str) -> Option<usize> {
+        let mut square = square.chars();
+        let row = square.next()? as usize - 'a' as usize;
+
+        let col = square.next()?.to_digit(10)? as usize - 1;
+        if row >= self.height() || col >= self.width() {
+            return None;
+        }
+
+        Some(row * self.width() + col)
     }
 }
 
@@ -58,7 +86,7 @@ impl Default for Piece {
 }
 
 impl Display for Piece {
-    fn fmt(&self, f: &mut Formatter) -> Result {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         let character = match self {
             Piece::Empty => '·',
             Piece::Nought => 'O',
@@ -69,7 +97,7 @@ impl Display for Piece {
 }
 
 impl Display for Board {
-    fn fmt(&self, f: &mut Formatter) -> Result {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         // Write col headers.
         write!(f, " ")?;
         for c in (0..self.cells[0].len()).map(|i| (b'a' + (i as u8)) as char) {
