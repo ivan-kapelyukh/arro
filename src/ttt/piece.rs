@@ -4,7 +4,7 @@ use std::fmt::Display;
 use std::fmt::Formatter;
 use std::fmt::Result;
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq)]
 pub enum TTTPiece {
     Empty,
     Mark(Player),

@@ -1,10 +1,12 @@
-use crate::ttt::ttt_piece::TTTPiece;
+use crate::player::Player;
+use crate::ttt::piece::TTTPiece;
 use std::fmt;
 use std::fmt::Display;
 use std::fmt::Formatter;
 
 pub struct Board {
     cells: Vec<Vec<TTTPiece>>,
+    next_move: Player,
 }
 
 // TODO: polymorphism through composition - should be easy to have
@@ -13,7 +15,17 @@ impl Board {
     pub fn empty(n: usize) -> Self {
         Board {
             cells: vec![vec![TTTPiece::default(); n]; n],
+            next_move: Player::One,
         }
+    }
+
+    // In case you want to use iterators on the board.
+    pub fn cells(&self) -> &Vec<Vec<TTTPiece>> {
+        &self.cells
+    }
+
+    pub fn get(&self, row: usize, col: usize) -> TTTPiece {
+        self.cells[row][col]
     }
 
     pub fn set(&mut self, row: usize, col: usize, new_piece: TTTPiece) {
@@ -30,13 +42,13 @@ impl Board {
 
     pub fn square_to_pos(&self, square: &str) -> Option<(usize, usize)> {
         let mut square = square.chars();
-        let row = square.next()? as usize;
-        if row < 'a' as usize {
+        let col = square.next()? as usize;
+        if col < 'a' as usize {
             return None;
         }
-        let row = row - 'a' as usize;
+        let col = col - 'a' as usize;
 
-        let col = square.next()?.to_digit(10)? as usize - 1;
+        let row = square.next()?.to_digit(10)? as usize - 1;
         if row >= self.height() || col >= self.width() {
             return None;
         }

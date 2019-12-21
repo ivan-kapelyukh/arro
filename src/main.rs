@@ -6,7 +6,8 @@ mod ttt;
 use board::Board;
 use player::Player;
 use std::io::stdin;
-use ttt::ttt_piece::TTTPiece;
+use ttt::judge::game_won;
+use ttt::piece::TTTPiece;
 
 fn main() {
     // Clear terminal.
@@ -20,6 +21,7 @@ fn main() {
         let (row, col) = input_move_index(&board);
         board.set(row, col, TTTPiece::Mark(Player::One));
         println!("{}", board);
+        println!("Won? {}", game_won(&board));
     }
 }
 
