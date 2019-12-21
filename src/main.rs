@@ -1,9 +1,12 @@
 mod board;
 mod piece;
+mod player;
+mod ttt;
 
 use board::Board;
-use piece::Piece;
+use player::Player;
 use std::io::stdin;
+use ttt::ttt_piece::TTTPiece;
 
 fn main() {
     // Clear terminal.
@@ -15,7 +18,7 @@ fn main() {
 
     loop {
         let (row, col) = input_move_index(&board);
-        board.set(row, col, Piece::Cross);
+        board.set(row, col, TTTPiece::Mark(Player::One));
         println!("{}", board);
     }
 }

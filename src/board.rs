@@ -1,20 +1,22 @@
-use crate::piece::Piece;
+use crate::ttt::ttt_piece::TTTPiece;
 use std::fmt;
 use std::fmt::Display;
 use std::fmt::Formatter;
 
 pub struct Board {
-    cells: Vec<Vec<Piece>>,
+    cells: Vec<Vec<TTTPiece>>,
 }
 
+// TODO: polymorphism through composition - should be easy to have
+// this refer to Piece rather than specifically TTTPiece
 impl Board {
     pub fn empty(n: usize) -> Self {
         Board {
-            cells: vec![vec![Piece::default(); n]; n],
+            cells: vec![vec![TTTPiece::default(); n]; n],
         }
     }
 
-    pub fn set(&mut self, row: usize, col: usize, new_piece: Piece) {
+    pub fn set(&mut self, row: usize, col: usize, new_piece: TTTPiece) {
         self.cells[row][col] = new_piece;
     }
 
