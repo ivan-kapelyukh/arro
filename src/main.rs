@@ -6,33 +6,53 @@ use std::io::stdin;
 fn main() {
     // Clear terminal.
     print!("{}[2J", 27 as char);
-    println!("Hello there! What size should the game board be?");
 
-    let mut size = String::new();
-    stdin().read_line(&mut size).expect("Error reading input");
-    let size: usize = size.trim().parse().expect("Please enter a number");
-
+    let size = input_board_size();
     let mut board = Board::empty(size);
     println!("{}", board);
 
-    let mut player_move = String::new();
-    println!("Your move!");
-    stdin()
-        .read_line(&mut player_move)
-        .expect("Error reading input");
+    loop {
+        let (row, col) = input_move_index(&board);
+        board.set(row, col, Piece::Cross);
+        println!("{}", board);
+    }
+}
 
-    let parsed_index = board.square_to_index(&player_move);
-    let index: usize;
-    match parsed_index {
-        Some(i) => {
-            index = i;
-            println!("Index: {}", index);
+fn input_board_size() -> usize {
+    println!("Hello there! How many rows should the game board have?");
+
+    loop {
+        let mut size = String::new();
+        stdin().read_line(&mut size).expect("Error reading input");
+        let size = size.trim().parse();
+        if let Ok(n) = size {
+            // At time of writing, these lines can't be merged yet!
+            if n > 0 {
+                return n;
+            }
         }
-        None => println!(
+        println!("Please enter a suitable number of rows");
+    }
+}
+
+fn input_move_index(board: &Board) -> (usize, usize) {
+    println!("Your move!");
+    loop {
+        let mut player_move = String::new();
+        stdin()
+            .read_line(&mut player_move)
+            .expect("Error reading input");
+
+        let parsed_pos = board.square_to_pos(&player_move);
+        if let Some(pos) = parsed_pos {
+            return pos;
+        }
+
+        println!(
             "Square should be in the form: a1, up to {}{}",
             (b'a' + (board.width() - 1) as u8) as char,
             board.height()
-        ),
+        );
     }
 }
 
@@ -59,16 +79,20 @@ impl Board {
         self.cells[0].len()
     }
 
-    fn square_to_index(&self, square: &str) -> Option<usize> {
+    fn square_to_pos(&self, square: &str) -> Option<(usize, usize)> {
         let mut square = square.chars();
-        let row = square.next()? as usize - 'a' as usize;
+        let row = square.next()? as usize;
+        if row < 'a' as usize {
+            return None;
+        }
+        let row = row - 'a' as usize;
 
         let col = square.next()?.to_digit(10)? as usize - 1;
         if row >= self.height() || col >= self.width() {
             return None;
         }
 
-        Some(row * self.width() + col)
+        Some((row, col))
     }
 }
 
