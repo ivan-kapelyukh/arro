@@ -6,7 +6,6 @@ use std::fmt::Formatter;
 
 pub struct Board {
     cells: Vec<Vec<TTTPiece>>,
-    next_move: Player,
 }
 
 // TODO: polymorphism through composition - should be easy to have
@@ -15,7 +14,6 @@ impl Board {
     pub fn empty(n: usize) -> Self {
         Board {
             cells: vec![vec![TTTPiece::default(); n]; n],
-            next_move: Player::One,
         }
     }
 

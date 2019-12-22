@@ -35,10 +35,19 @@ pub fn game_won(board: &Board) -> bool {
     let game_won =
     directions.iter().map(|direction|
      direction.iter().map(|line| line[0] != TTTPiece::Empty &&
-          line.iter().map(|e| *e == line[0])
-             .all(|e| e)
+          line.iter().map(|c| *c == line[0])
+             .all(|c| c)
          ).any(|line| line)
     ).any(|direction| direction);
 
     game_won
+}
+
+// Pre: game not won
+pub fn game_drawn(board: &Board) -> bool {
+    board
+        .cells()
+        .iter()
+        .flatten()
+        .all(|c| *c != TTTPiece::Empty)
 }
