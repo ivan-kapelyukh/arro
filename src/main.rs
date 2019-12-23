@@ -17,13 +17,15 @@ fn main() {
     let mut board = Board::empty(size);
     println!("{}", board);
 
+    let mut to_play = Player::One;
     let mut game_won = false;
 
     while !game_won && !calculate_game_drawn(&board) {
         let (row, col) = input_move_index(&board);
-        board.set(row, col, TTTPiece::Mark(Player::One));
+        board.set(row, col, TTTPiece::Mark(to_play));
         println!("{}", board);
         game_won = calculate_game_won(&board);
+        to_play = Player::other(to_play);
     }
 
     if game_won {
