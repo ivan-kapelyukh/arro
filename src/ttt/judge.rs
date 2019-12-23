@@ -51,3 +51,7 @@ pub fn calculate_game_drawn(board: &Board) -> bool {
         .flatten()
         .all(|c| *c != TTTPiece::Empty)
 }
+
+pub fn move_fair(curr_board: &Board, row: usize, col: usize) -> bool {
+    curr_board.get(row, col) == TTTPiece::Empty
+}

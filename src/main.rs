@@ -1,13 +1,12 @@
 mod board;
 mod piece;
-mod player;
 mod ttt;
 
 use board::Board;
-use player::Player;
 use std::io::stdin;
-use ttt::judge::{calculate_game_drawn, calculate_game_won};
+use ttt::judge::{calculate_game_drawn, calculate_game_won, move_fair};
 use ttt::piece::TTTPiece;
+use ttt::player::TTTPlayer;
 
 fn main() {
     // Clear terminal.
@@ -17,19 +16,19 @@ fn main() {
     let mut board = Board::empty(size);
     println!("{}", board);
 
-    let mut to_play = Player::One;
+    let mut to_play = TTTPlayer::X;
     let mut game_won = false;
 
     while !game_won && !calculate_game_drawn(&board) {
-        let (row, col) = input_move_index(&board);
+        let (row, col) = input_move_index(&board, to_play);
         board.set(row, col, TTTPiece::Mark(to_play));
         println!("{}", board);
         game_won = calculate_game_won(&board);
-        to_play = Player::other(to_play);
+        to_play = TTTPlayer::other(to_play);
     }
 
     if game_won {
-        println!("You won!");
+        println!("You won, Player {}!", TTTPlayer::other(to_play));
     } else {
         println!("Draw");
     }
@@ -52,8 +51,9 @@ fn input_board_size() -> usize {
     }
 }
 
-fn input_move_index(board: &Board) -> (usize, usize) {
-    println!("Your move!");
+fn input_move_index(board: &Board, player: TTTPlayer) -> (usize, usize) {
+    println!("Your move, Player {}!", player);
+
     loop {
         let mut player_move = String::new();
         stdin()
@@ -61,14 +61,18 @@ fn input_move_index(board: &Board) -> (usize, usize) {
             .expect("Error reading input");
 
         let parsed_pos = board.square_to_pos(&player_move);
-        if let Some(pos) = parsed_pos {
-            return pos;
+        if let Some((row, col)) = parsed_pos {
+            if move_fair(board, row, col) {
+                return (row, col);
+            } else {
+                println!("You can only choose empty squares");
+            }
+        } else {
+            println!(
+                "Square should be in the form: a1, up to {}{}",
+                (b'a' + (board.width() - 1) as u8) as char,
+                board.height()
+            );
         }
-
-        println!(
-            "Square should be in the form: a1, up to {}{}",
-            (b'a' + (board.width() - 1) as u8) as char,
-            board.height()
-        );
     }
 }

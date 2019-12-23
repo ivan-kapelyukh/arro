@@ -1,5 +1,5 @@
 use crate::piece::Piece;
-use crate::player::Player;
+use crate::ttt::player::TTTPlayer;
 use std::fmt::Display;
 use std::fmt::Formatter;
 use std::fmt::Result;
@@ -7,7 +7,7 @@ use std::fmt::Result;
 #[derive(Copy, Clone, PartialEq)]
 pub enum TTTPiece {
     Empty,
-    Mark(Player),
+    Mark(TTTPlayer),
 }
 
 impl Piece for TTTPiece {}
@@ -20,11 +20,9 @@ impl Default for TTTPiece {
 
 impl Display for TTTPiece {
     fn fmt(&self, f: &mut Formatter) -> Result {
-        let character = match self {
-            TTTPiece::Empty => '·',
-            TTTPiece::Mark(Player::One) => 'X',
-            TTTPiece::Mark(Player::Two) => 'O',
-        };
-        write!(f, "{}", character)
+        match self {
+            TTTPiece::Empty => write!(f, "·"),
+            TTTPiece::Mark(p) => p.fmt(f),
+        }
     }
 }
