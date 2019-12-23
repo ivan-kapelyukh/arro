@@ -6,7 +6,7 @@ mod ttt;
 use board::Board;
 use player::Player;
 use std::io::stdin;
-use ttt::judge::game_won;
+use ttt::judge::{calculate_game_drawn, calculate_game_won};
 use ttt::piece::TTTPiece;
 
 fn main() {
@@ -17,11 +17,19 @@ fn main() {
     let mut board = Board::empty(size);
     println!("{}", board);
 
-    loop {
+    let mut game_won = false;
+
+    while !game_won && !calculate_game_drawn(&board) {
         let (row, col) = input_move_index(&board);
         board.set(row, col, TTTPiece::Mark(Player::One));
         println!("{}", board);
-        println!("Won? {}", game_won(&board));
+        game_won = calculate_game_won(&board);
+    }
+
+    if game_won {
+        println!("You won!");
+    } else {
+        println!("Draw");
     }
 }
 

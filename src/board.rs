@@ -1,4 +1,3 @@
-use crate::player::Player;
 use crate::ttt::piece::TTTPiece;
 use std::fmt;
 use std::fmt::Display;

@@ -6,7 +6,7 @@ use std::cmp::min;
 //    /\
 //   /  \
 
-pub fn game_won(board: &Board) -> bool {
+pub fn calculate_game_won(board: &Board) -> bool {
     let rows = board.cells();
 
     let mut cols = Vec::new();
@@ -44,7 +44,7 @@ pub fn game_won(board: &Board) -> bool {
 }
 
 // Pre: game not won
-pub fn game_drawn(board: &Board) -> bool {
+pub fn calculate_game_drawn(board: &Board) -> bool {
     board
         .cells()
         .iter()
