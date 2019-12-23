@@ -5,6 +5,7 @@ mod ttt;
 use board::Board;
 use std::io::stdin;
 use ttt::judge::{calculate_game_drawn, calculate_game_won, move_fair};
+use ttt::minimax::pick_move;
 use ttt::piece::TTTPiece;
 use ttt::player::TTTPlayer;
 
@@ -20,7 +21,11 @@ fn main() {
     let mut game_won = false;
 
     while !game_won && !calculate_game_drawn(&board) {
-        let (row, col) = input_move_index(&board, to_play);
+        let (row, col) = match to_play {
+            TTTPlayer::X => input_move_index(&board, to_play),
+            TTTPlayer::O => pick_move(&board, to_play),
+        };
+
         board.set(row, col, TTTPiece::Mark(to_play));
         println!("{}", board);
         game_won = calculate_game_won(&board);
