@@ -1,5 +1,5 @@
 use crate::board::Board;
-use crate::ttt::judge::move_fair;
+use crate::ttt::judge::{calculate_game_drawn, calculate_game_won, move_fair};
 use crate::ttt::piece::TTTPiece;
 use crate::ttt::player::TTTPlayer;
 
@@ -19,15 +19,24 @@ pub fn pick_move(board: &mut Board, to_play: TTTPlayer) -> (usize, usize) {
     for mut m in &mut valid_moves {
         let (row, col, _) = m;
         board.set(*row, *col, TTTPiece::from(to_play));
-        m.2 = eval(board);
+        m.2 = eval(board, TTTPlayer::other(to_play));
         board.undo(*row, *col);
     }
 
+    // println!("Moves: {:#?}", valid_moves);
     // Unwrap safe due to precondition.
     let (best_row, best_col, _) = valid_moves.iter().max_by_key(|(_, _, val)| val).unwrap();
     (*best_row, *best_col)
 }
 
-fn eval(board: &Board) -> i32 {
+fn eval(board: &Board, to_play: TTTPlayer) -> i32 {
+    if calculate_game_won(board) {
+        // The to_play player has lost.
+        return match to_play {
+            TTTPlayer::O => -1000,
+            TTTPlayer::X => 1000,
+        };
+    }
+
     0
 }
