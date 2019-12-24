@@ -5,6 +5,7 @@ use crate::ttt::player::TTTPlayer;
 
 // Pre: game not over yet
 pub fn pick_move(board: &mut Board, to_play: TTTPlayer) -> (usize, usize) {
+    const MAX_LOOKAHEAD: u32 = 8;
     println!("Your move, Player {}!", to_play);
 
     let mut valid_moves: Vec<(usize, usize, i32)> = Vec::new();
@@ -19,7 +20,7 @@ pub fn pick_move(board: &mut Board, to_play: TTTPlayer) -> (usize, usize) {
     for mut m in &mut valid_moves {
         let (row, col, _) = m;
         board.set(*row, *col, TTTPiece::from(to_play));
-        m.2 = eval(board, TTTPlayer::other(to_play));
+        m.2 = eval(board, TTTPlayer::other(to_play), MAX_LOOKAHEAD - 1);
         board.undo(*row, *col);
     }
 
@@ -29,7 +30,7 @@ pub fn pick_move(board: &mut Board, to_play: TTTPlayer) -> (usize, usize) {
     (*best_row, *best_col)
 }
 
-fn eval(board: &mut Board, to_play: TTTPlayer) -> i32 {
+fn eval(board: &mut Board, to_play: TTTPlayer, max_lookahead: u32) -> i32 {
     if calculate_game_won(board) {
         // The to_play player has lost.
         return match to_play {
@@ -38,7 +39,7 @@ fn eval(board: &mut Board, to_play: TTTPlayer) -> i32 {
         };
     }
 
-    if calculate_game_drawn(board) {
+    if calculate_game_drawn(board) || max_lookahead == 0 {
         return 0;
     }
 
@@ -54,7 +55,7 @@ fn eval(board: &mut Board, to_play: TTTPlayer) -> i32 {
     for mut m in &mut valid_moves {
         let (row, col, _) = m;
         board.set(*row, *col, TTTPiece::from(to_play));
-        m.2 = eval(board, TTTPlayer::other(to_play));
+        m.2 = eval(board, TTTPlayer::other(to_play), max_lookahead - 1);
         board.undo(*row, *col);
     }
 
