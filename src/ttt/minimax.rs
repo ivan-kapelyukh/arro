@@ -26,7 +26,12 @@ pub fn pick_move(board: &mut Board, to_play: TTTPlayer) -> (usize, usize) {
 
     // println!("Moves: {:#?}", valid_moves);
     // Unwrap safe due to precondition.
-    let (best_row, best_col, _) = valid_moves.iter().max_by_key(|(_, _, val)| val).unwrap();
+    let (best_row, best_col, best_val) = valid_moves.iter().max_by_key(|(_, _, val)| val).unwrap();
+
+    if *best_val == 1000 {
+        println!("Mwahaha, machine victory is now inevitable!");
+    }
+
     (*best_row, *best_col)
 }
 
