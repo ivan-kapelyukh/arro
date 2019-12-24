@@ -26,3 +26,9 @@ impl Display for TTTPiece {
         }
     }
 }
+
+impl From<TTTPlayer> for TTTPiece {
+    fn from(player: TTTPlayer) -> Self {
+        TTTPiece::Mark(player)
+    }
+}

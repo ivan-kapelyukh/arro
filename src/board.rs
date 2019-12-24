@@ -29,6 +29,11 @@ impl Board {
         self.cells[row][col] = new_piece;
     }
 
+    // For more complicated games, may need to store extra history info.
+    pub fn undo(&mut self, row: usize, col: usize) {
+        self.cells[row][col] = TTTPiece::Empty;
+    }
+
     pub fn height(&self) -> usize {
         self.cells.len()
     }

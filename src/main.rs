@@ -23,7 +23,7 @@ fn main() {
     while !game_won && !calculate_game_drawn(&board) {
         let (row, col) = match to_play {
             TTTPlayer::X => input_move_index(&board, to_play),
-            TTTPlayer::O => pick_move(&board, to_play),
+            TTTPlayer::O => pick_move(&mut board, to_play),
         };
 
         board.set(row, col, TTTPiece::Mark(to_play));
